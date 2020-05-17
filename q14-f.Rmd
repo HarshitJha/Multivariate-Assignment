@@ -1,0 +1,107 @@
+title: "R Notebook"
+output: pdf_document
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+Compiling the data
+
+```{r}
+help(manova)
+
+```
+
+```{r}
+da1 <- read.csv("C:\\Users\\Harshitwa Putushki\\Desktop\\2nd semester\\Multivariate\\assignment\\man.csv")
+```
+
+```{r}
+da1
+```
+
+```{r}
+z=cbind(da1[,3],da1[,4])
+fact1=factor(da1[,1])
+fact1
+fact2=factor(da1[,2])
+fact2
+```
+
+```{r}
+z1=da1[,3]
+```
+
+
+```{r}
+mm1 = aov(DV1 ~ Generation + Product + Generation * Product, data=da1)
+summary(mm1)
+```
+
+
+```{r}
+z2=da1[,4]
+```
+
+
+```{r}
+mm2 = aov(DV2 ~ Generation + Product + Generation * Product, data=da1)
+summary(mm2)
+```
+
+
+```{r}
+mm3 = manova(cbind(DV1, DV2) ~ Generation + Product + Generation * Product, data=da1)
+```
+
+
+```{r}
+mm3
+```
+
+
+
+
+```{r}
+summary(car::Manova(mm3))
+
+```
+
+
+
+
+```{r}
+summary(mm3,test="Wilks")
+```
+
+
+```{r}
+summary(mm3,test="Pillai")
+```
+
+
+```{r}
+HoRM::SSCP.fn(mm3)
+```
+
+```{r}
+out <- summary.aov(mm3)
+out
+```
+
+```{r}
+summary(mm3,
+        test = c("Pillai", "Wilks", "Hotelling-Lawley", "Roy"),
+        intercept = FALSE, tol = 1e-7)
+```
+```{r}
+mm4 = manova(cbind(DV1, DV2) ~ Generation + Product, data=da1)
+
+```
+
+```{r}
+summary(car::Manova(mm4))
+
+```
+

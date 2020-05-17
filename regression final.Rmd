@@ -1,0 +1,242 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+---
+title: "R Notebook"
+output: pdf_document
+---
+Reading the data
+```{r}
+```
+
+
+```{r}
+df <- read.csv("C:\\Users\\Harshitwa Putushki\\Desktop\\2nd semester\\Multivariate\\assignment\\IPLdata3.csv")
+dfo <- read.csv("C:\\Users\\Harshitwa Putushki\\Desktop\\2nd semester\\Multivariate\\assignment\\IPLdata1.csv")
+# print(df)
+```
+```{r}
+df <- df[ , 2:48] #drop serial no col
+df <- na.omit(df) #removes nan values
+# print(df)
+
+```
+FINDING COLUMN NAMES
+
+```{r}
+cols <- colnames(df)
+print(cols)
+```
+FINDING NUMERICAL COLUMNS
+
+```{r}
+nums <- unlist(lapply(df, is.numeric))  
+print(nums)
+```
+
+
+
+##Checking Normality of sold price dollar
+
+
+```{r}
+hist(df[,'Sold.Price.US..'],xlab = "sold price df",col = "green",border = "red", breaks = 5)
+```
+
+### Taking sqrt of sold price USD
+
+```{r}
+df[,'Sold.Price.US..'] <- sqrt(df[,'Sold.Price.US..'])
+
+# hist(df[,'Sold.Price.US..'],xlab = "sold price df log",col = "green",border = "red", breaks = 5)
+hist(df[,'Sold.Price.US..'],xlab = "sold price df",col = "green",border = "red", breaks = 5)
+```
+```{r}
+dfo[,'Sold.Price.US..'] <- sqrt(dfo[,'Sold.Price.US..'])
+
+# hist(df[,'Sold.Price.US..'],xlab = "sold price df log",col = "green",border = "red", breaks = 5)
+hist(dfo[,'Sold.Price.US..'],xlab = "sold price df",col = "green",border = "red", breaks = 5)
+```
+
+
+## Q1 i) response var - sqrt(Sold Price USD)
+
+
+```{r}
+print(cols)
+
+```
+PEARSON CORRELATION COEFFICIENT
+
+```{r}
+cor(df$ECON, df$BOW.ECO, method="pearson")
+```
+
+
+
+
+## Checking assumptions
+1)Visual Inspection by looking at residual and QQ plots
+2) Durbin watson test, studentized Breusch-Pagan test, VIF 
+
+
+
+
+##v) Highly overpaid and underpaid player (Sold Price)
+
+```{r}
+dfo[,'preds'] <- fitted(modelo)
+dfo[,'diff'] <- dfo[,"Sold.Price.US.."] - dfo[,"preds"]
+x <- dfo[dfo['diff']==min(dfo$diff)]
+y <- dfo[dfo['diff']==max(dfo$diff)]
+print(x)
+print(y)
+
+```
+
+## (i) b) Sold price - Base Price
+```{r}
+df[,'S_B.Price'] <- sqrt(df[,'S_B.Price'])
+hist(df[,'S_B.Price'],xlab = "S_B.Price",col = "blue",border = "red", breaks = 5)
+```
+
+
+
+```{r}
+dfo[,'S_B.Price'] <- sqrt(dfo[,'S_B.Price'])
+```
+
+```{r}
+print(df$S_B.Price)
+```
+
+
+# Sachin Tendulkar
+
+
+
+```{r}
+
+print(dfo)[110,]
+
+```
+
+## 734 is sqrt(sold-base price) of sachin
+```{r}
+x1 <- 119.22	
+x2 <- 64
+x3 <- 1
+x4 <- 0 
+x5 <- 1
+x6 <- 24
+x7 <- 0
+y = 157.7209  - 0.9433*x1 + 5.5151*x2 + 120.7009*x3 - 1.4456*x4 + 144.62*x5 + 2.9442*x6 + 183.1612*x7
+print(y)
+
+```
+
+
+
+
+## v) Highly overpaid and underpaid player (Sold Price  - Base Price)
+
+```{r}
+dfo[,'preds2'] <- fitted(modelb)
+dfo[,'diff2'] <- dfo[,"S_B.Price"] - dfo[,"preds2"]
+x <- dfo[dfo['diff2']==min(dfo$diff2)]
+y <- dfo[dfo['diff2']==max(dfo$diff2)]
+print(x)
+print(y)
+```
+
+
+# first model
+```{r}
+modela <- lm(Sold.Price.US.. ~ BAT.SR  
+             + MTS + CAPTAINCY.EXP + BOW.SR.BL + INDIA + SIXERS + L25
+            , data = dfo)
+
+summary(modela)
+```
+
+#2nd model
+```{r}
+modelb <- lm(S_B.Price ~ BAT.SR  
+             + MTS + CAPTAINCY.EXP + BOW.SR.BL + INDIA + SIXERS + L25
+            , data = dfo)
+
+summary(modelb)
+```
+
+
+
+
+
+```{r}
+plot(modela)
+print('VIF')
+car::vif(modela)
+print('Durbin Watson')
+car::durbinWatsonTest(modela)
+lmtest::bptest(modela)
+olsrr::ols_plot_cooksd_bar(modela)
+```
+
+
+```{r}
+plot(modelb)
+print('VIF')
+car::vif(modela)
+print('Durbin Watson')
+car::durbinWatsonTest(modelb)
+lmtest::bptest(modela)
+
+```
+
+## Calculationg dfbeta
+
+```{r}
+olsrr::ols_plot_dfbetas(modelb)
+dfbetas(modelb)[51,]
+```
+
+## Removing Virar Kohli
+
+```{r}
+dfov = dfo[-c(51),]
+
+```
+
+## Model after removing Virat Kohli
+
+```{r}
+modelvirat <- lm(S_B.Price ~ BAT.SR  
+             + MTS + CAPTAINCY.EXP + BOW.SR.BL + INDIA + SIXERS + L25
+            , data = dfov)
+
+summary(modelvirat)
+```
+
+## Identifying the most impactful predictors
+Standardized (or beta) coefficients from a linear regression model are the parameter estimates obtained when the predictors and outcomes have been standardized to have variance = 1. Alternatively, the regression model can be fit and then standardized post-hoc based on the appropriate standard deviations. The parameters are thus interpreted as change in the outcome, in standard deviations, per standard deviation change in the predictors. However they’re calculated, standardized coefficients facilitate an assessment of which variables have the greatest association with the outcome (or response) variable, though such an assessment ignores the confidence limits associated with each pairwise association.
+
+```{r}
+library(QuantPsyc)
+lm.beta(modelb)
+```
+
+
+
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.

@@ -1,0 +1,111 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+
+```{r}
+winedata <- read.csv("C:\\Users\\Harshitwa Putushki\\Desktop\\2nd semester\\Multivariate\\assignment\\winedata.csv")
+
+```
+
+```{r}
+qqnorm(winedata$fixed.acidity)
+qqnorm(winedata$free.sulfur.dioxide)
+qqnorm(winedata$pH)
+qqnorm(winedata$chlorides)
+
+```
+
+
+
+```{r}
+muH0 <- c(7, 35, 0.45, 3.2 )
+library(ICSNP)
+HotellingsT2(winedata, mu=muH0)
+```
+
+```{r}
+winedatach <- read.csv("C:\\Users\\Harshitwa Putushki\\Desktop\\2nd semester\\Multivariate\\assignment\\winedatach.csv")
+
+```
+
+```{r}
+muH0 <- c(7, 35, 0.45, 3.2 )
+library(ICSNP)
+HotellingsT2(winedatach, mu=muH0)
+```
+
+```{r}
+muH0 <- c(15, 85, 0.85, 1.2)
+library(ICSNP)
+HotellingsT2(winedatach, mu=muH0)
+```
+
+
+
+```{r}
+mvdalab::MVcis(winedatach, segments = 51, level = .95, Vars2Plot = c(1, 3), include.zero = F)
+```
+
+```{r}
+mvdalab::MVcis(winedata, segments = 51, level = .95, Vars2Plot = c(1, 3), include.zero = F)
+```
+
+```{r}
+mvdalab::MVcis(winedata, segments = 51, level = .95, Vars2Plot = c(1, 2), include.zero = F)
+```
+
+
+```{r}
+mvdalab::MVcis(winedata, segments = 51, level = .95, Vars2Plot = c(2, 3), include.zero = F)
+```
+
+```{r}
+mvdalab::MVcis(winedata, segments = 51, level = .95, Vars2Plot = c(3,4), include.zero = F)
+```
+
+```{r}
+Rmisc::CI(winedata$pH, ci=0.95)
+```
+
+```{r}
+Rmisc::CI(winedata$fixed.acidity, ci=0.95)
+```
+
+```{r}
+Rmisc::CI(winedata$chlorides, ci=0.95)
+```
+
+```{r}
+Rmisc::CI(winedata$free.sulfur.dioxide, ci=0.95)
+```
+
+
+## Bonferroni confidence intervals
+
+
+```{r}
+Rmisc::CI(winedata$pH, ci=0.99375)
+```
+
+```{r}
+Rmisc::CI(winedata$fixed.acidity, ci=0.99375)
+```
+
+```{r}
+Rmisc::CI(winedata$chlorides, ci=0.99375)
+```
+
+```{r}
+Rmisc::CI(winedata$free.sulfur.dioxide, ci=0.99375)
+```
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
